@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="movie-table">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -13,9 +13,9 @@
           v-for="movie in paginatedData"
           v-on:click="singleMovieModal(movie.id)"
         >
-          <td>{{ movie.title }}</td>
-          <td>{{ moment(movie.release_date).format("MM/DD/YYYY") }}</td>
-          <td>{{ movie.vote_count }}</td>
+          <td><h4>{{ movie.title }}</h4></td>
+          <td><h4>{{ moment(movie.release_date).format("MM/DD/YYYY") }}</h4></td>
+          <td><h4>{{ movie.vote_count }}</h4></td>
         </tr>
       </tbody>
     </table>
@@ -65,14 +65,17 @@
       };
     },
     mounted() {
+        //Makes intial Movie List Ajax call on page load
       this.$store.dispatch("getFullMovieList");
     },
     methods: {
       singleMovieModal(id) {
+          // On click calls a function in the store for a single movie with id Ajax request
         this.$store.dispatch("getSingleMovie", id);
         this.showModal = true;
       },
       singleMovieImg(baseUrl, imgPath) {
+          // Concatenates base url and img path to return a img src for the view
         return baseUrl + imgPath;
       },
       nextPage() {
@@ -86,7 +89,7 @@
         this.showModal = false;
       },
       sortColumns(col) {
-
+          // sorts columns of the table by column title
         switch (col) {
           case "Title":
             // Build toggle if clicked twice
@@ -123,9 +126,10 @@
     computed: {
       pageCount() {
         let length = this.$store.state.fullMovieList.length;
-        return Math.ceil(length / this.size);
+        return Math.ceil(length / this.size) - 1;
       },
       paginatedData() {
+          // splits up movie data to limit 20 entries per page
         const start = this.pageNumber * this.size,
           end = start + this.size;
         return this.$store.state.fullMovieList.slice(start, end);
