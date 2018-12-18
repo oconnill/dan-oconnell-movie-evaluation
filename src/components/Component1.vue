@@ -14,7 +14,7 @@
           v-on:click="singleMovieModal(movie.id)"
         >
           <td>{{ movie.title }}</td>
-          <td>{{ movie.release_date }}</td>
+          <td>{{ moment(movie.release_date).format("MM/DD/YYYY") }}</td>
           <td>{{ movie.vote_count }}</td>
         </tr>
       </tbody>
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+  import moment from "moment";
+
   export default {
     name: "app",
     components: {},
@@ -46,12 +48,10 @@
       },
       prevPage() {
         this.pageNumber--;
-      }
+      },
+      moment
     },
     computed: {
-      fullMoviesList() {
-        return this.$store.state.fullMovieList;
-      },
       pageCount() {
         let l = this.$store.state.fullMovieList.length,
           s = 20;
@@ -59,7 +59,7 @@
       },
       paginatedData() {
         const start = this.pageNumber * this.size,
-        end = start + this.size;
+          end = start + this.size;
         return this.$store.state.fullMovieList.slice(start, end);
       }
     }
