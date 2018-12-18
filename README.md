@@ -25,3 +25,5 @@ Work Overview
 7. Build modal that is populated by the onclick function and displays the single movie response.
 
 8. Add css styling for enhanced user experience navigating movie data.
+
+9. Build for production and deployment.
