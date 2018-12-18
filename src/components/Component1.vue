@@ -3,9 +3,9 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Release Date</th>
-          <th>Vote Count</th>
+          <th v-on:click="(sortColumns(column))" v-for="column in columns">
+            {{ column }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +31,7 @@
 
               <div class="modal-body">
                 <h1>{{ singleMovie.title }}</h1>
-                <img  :src="singleMovie.base_url + singleMovie.poster_path">
+                <img :src="singleMovie.base_url + singleMovie.poster_path" />
                 <p>{{ singleMovie.overview }}</p>
               </div>
 
@@ -58,7 +58,8 @@
       return {
         pageNumber: 0,
         size: 20,
-        showModal: false
+        showModal: false,
+        columns: ["Title", "Release Date", "Vote Count"]
       };
     },
     mounted() {
@@ -69,8 +70,8 @@
         this.$store.dispatch("getSingleMovie", id);
         this.showModal = true;
       },
-      singleMovieImg(baseUrl, imgPath){
-          return baseUrl + imgPath
+      singleMovieImg(baseUrl, imgPath) {
+        return baseUrl + imgPath;
       },
       nextPage() {
         this.pageNumber++;
@@ -81,6 +82,28 @@
       closeModal() {
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
+      },
+      sortColumns(col) {
+
+
+        
+        switch (col) {
+          case "Title":
+            commit("setMenuOptions", this.state.developmentOptions);
+            break;
+          case "Release Date":
+            commit("setMenuOptions", this.state.designOptions);
+            break;
+          case "Vote Count":
+            debugger;
+            let a = this.$store.state.fullMovieList;
+            let sorted = a.sort(
+              (a, b) =>
+                parseInt(a.vote_count) - parseInt(b.vote_count)
+            );
+            this.$store.state.fullMovieList = sorted;
+            break;
+        }
       },
       moment
     },
@@ -100,3 +123,6 @@
     }
   };
 </script>
+
+let sorted = a.sort((a, b) => parseInt(a.movie.vote_count) -
+parseInt(b.ColumnLocation)); console.log(sorted);
