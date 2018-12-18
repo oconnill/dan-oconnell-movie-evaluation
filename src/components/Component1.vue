@@ -26,21 +26,19 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-              <div class="modal-header">
-                <slot name="header"> default header </slot>
-              </div>
+              <div class="modal-header"></div>
 
               <div class="modal-body">
-                <slot name="body"> default body </slot>
+                {{ singleMovie.title }}
               </div>
 
               <div class="modal-footer">
-                <slot name="footer">
-                  default footer
-                  <button class="modal-default-button" v-on:click="showModal = false">
-                    OK
-                  </button>
-                </slot>
+                <button
+                  class="modal-default-button"
+                  v-on:click="closeModal()"
+                >
+                  OK
+                </button>
               </div>
             </div>
           </div>
@@ -68,8 +66,8 @@
     },
     methods: {
       singleMovieModal(id) {
+        this.$store.dispatch("getSingleMovie", id);
         this.showModal = true;
-        debugger;
       },
       nextPage() {
         this.pageNumber++;
@@ -79,16 +77,22 @@
       },
       moment
     },
+    closeModal() {
+        this.$store.state.singleMovieModal = [];
+        this.showModal = false;
+    },
     computed: {
       pageCount() {
-        let l = this.$store.state.fullMovieList.length,
-          s = 20;
-        return Math.ceil(l / s);
+        let length = this.$store.state.fullMovieList.length;
+        return Math.ceil(length / size);
       },
       paginatedData() {
         const start = this.pageNumber * this.size,
           end = start + this.size;
         return this.$store.state.fullMovieList.slice(start, end);
+      },
+      singleMovie() {
+        return this.$store.state.singleMovieModal;
       }
     }
   };
