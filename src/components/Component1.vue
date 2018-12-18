@@ -31,7 +31,9 @@
 
               <div class="modal-body">
                 <h1>{{ singleMovie.title }}</h1>
-                <img :src="singleMovie.base_url + singleMovie.poster_path" />
+                <div class="inner">
+                  <img :src="singleMovie.base_url + singleMovie.poster_path" />
+                </div>
                 <p>{{ singleMovie.overview }}</p>
               </div>
 
@@ -59,13 +61,6 @@
         pageNumber: 0,
         size: 20,
         showModal: false,
-        sortKey: "",
-        desc: true,
-        sortSettings: [
-          { Title: true },
-          { "Release Date": true },
-          { "Vote Count": true }
-        ],
         columns: ["Title", "Release Date", "Vote Count"]
       };
     },
@@ -90,16 +85,9 @@
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
       },
-      orderBy(sorKey) {
-        debugger;
-        this.sortKey = sorKey;
-        this.sortSettings[sorKey] = !this.sortSettings[sorKey];
-        this.desc = this.sortSettings[sorKey];
-      },
       sortColumns(col) {
         switch (col) {
           case "Title":
-            debugger;
             // Build toggle if clicked twice
             this.$store.state.fullMovieList.sort(function(a, b) {
               if (a.title < b.title) {
@@ -112,10 +100,18 @@
             });
             break;
           case "Release Date":
+            this.$store.state.fullMovieList.sort(function(a, b) {
+              if (a.release_date < b.release_date) {
+                return -1;
+              }
+              if (a.release_date > b.release_date) {
+                return 1;
+              }
+              return 0;
+            });
             break;
           case "Vote Count":
-            let a = this.$store.state.fullMovieList;
-            let sortedByVoteCount = a.sort(
+            this.$store.state.fullMovieList.sort(
               (a, b) => parseInt(a.vote_count) - parseInt(b.vote_count)
             );
             break;
@@ -126,7 +122,7 @@
     computed: {
       pageCount() {
         let length = this.$store.state.fullMovieList.length;
-        return Math.ceil(length / size);
+        return Math.ceil(length / this.size);
       },
       paginatedData() {
         const start = this.pageNumber * this.size,
@@ -135,8 +131,7 @@
       },
       singleMovie() {
         return this.$store.state.singleMovieModal;
-      },
-      sortVotes() {}
+      }
     }
   };
 </script>

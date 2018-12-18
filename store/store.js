@@ -16,7 +16,6 @@ export const store = new vuex.Store({
       state.fullMovieList = data;
     },
     setSingleMovie(state, data) {
-      debugger
       state.singleMovieModal = data;
     },
     handleError(state, data) {
