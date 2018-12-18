@@ -19,6 +19,7 @@
         </tr>
       </tbody>
     </table>
+    <div v-if='pageNumber > 0'>{{ pageNumber }}</div>
     <button @click="prevPage">Previous</button>
     <button @click="nextPage">Next</button>
     <div v-if="showModal">
@@ -35,7 +36,7 @@
               <div class="modal-footer">
                 <button
                   class="modal-default-button"
-                  v-on:click="closeModal()"
+                  v-on:click="closeModal"
                 >
                   OK
                 </button>
@@ -75,11 +76,11 @@
       prevPage() {
         this.pageNumber--;
       },
-      moment
-    },
-    closeModal() {
+      closeModal() {
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
+    },
+      moment
     },
     computed: {
       pageCount() {
