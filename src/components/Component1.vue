@@ -3,7 +3,7 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th v-on:click="orderBy(column)" v-for="column in columns">
+          <th v-on:click="sortColumns(column)" v-for="column in columns">
             {{ column }}
           </th>
         </tr>
@@ -59,13 +59,13 @@
         pageNumber: 0,
         size: 20,
         showModal: false,
-        sortKey: '',
+        sortKey: "",
         desc: true,
         sortSettings: [
-            { "Title": true },
-            { "Release Date": true },
-            { "Vote Count": true }
-          ],
+          { Title: true },
+          { "Release Date": true },
+          { "Vote Count": true }
+        ],
         columns: ["Title", "Release Date", "Vote Count"]
       };
     },
@@ -91,29 +91,36 @@
         this.showModal = false;
       },
       orderBy(sorKey) {
-          debugger
-            this.sortKey = sorKey
-            this.sortSettings[sorKey] = !this.sortSettings[sorKey]
-            this.desc = this.sortSettings[sorKey]
-        },
-    //   sortColumns(col) {
-    //     switch (col) {
-    //       case "Title":
-    //         function compare(a, b) {
-    //           if (a.name < b.name) return -1;
-    //           if (a.name > b.name) return 1;
-    //           return 0;
-    //         }
-    //         return this.arrays.sort(compare);
-    //         break;
-    //       case "Release Date":
-
-    //         break;
-    //       case "Vote Count":
-    //         debugger;
-    //         break;
-    //     }
-    //   },
+        debugger;
+        this.sortKey = sorKey;
+        this.sortSettings[sorKey] = !this.sortSettings[sorKey];
+        this.desc = this.sortSettings[sorKey];
+      },
+      sortColumns(col) {
+        switch (col) {
+          case "Title":
+            debugger;
+            // Build toggle if clicked twice
+            this.$store.state.fullMovieList.sort(function(a, b) {
+              if (a.title < b.title) {
+                return -1;
+              }
+              if (a.title > b.title) {
+                return 1;
+              }
+              return 0;
+            });
+            break;
+          case "Release Date":
+            break;
+          case "Vote Count":
+            let a = this.$store.state.fullMovieList;
+            let sortedByVoteCount = a.sort(
+              (a, b) => parseInt(a.vote_count) - parseInt(b.vote_count)
+            );
+            break;
+        }
+      },
       moment
     },
     computed: {
@@ -129,9 +136,7 @@
       singleMovie() {
         return this.$store.state.singleMovieModal;
       },
-      sortVotes(){
-      }
+      sortVotes() {}
     }
   };
 </script>
-
