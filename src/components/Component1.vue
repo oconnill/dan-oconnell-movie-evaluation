@@ -19,7 +19,7 @@
         </tr>
       </tbody>
     </table>
-    <div v-if='pageNumber > 0'>{{ pageNumber }}</div>
+    <div v-if="pageNumber > 0">{{ pageNumber }}</div>
     <button @click="prevPage">Previous</button>
     <button @click="nextPage">Next</button>
     <div v-if="showModal">
@@ -30,14 +30,13 @@
               <div class="modal-header"></div>
 
               <div class="modal-body">
-                {{ singleMovie.title }}
+                <h1>{{ singleMovie.title }}</h1>
+                <img  :src="singleMovie.base_url + singleMovie.poster_path">
+                <p>{{ singleMovie.overview }}</p>
               </div>
 
               <div class="modal-footer">
-                <button
-                  class="modal-default-button"
-                  v-on:click="closeModal"
-                >
+                <button class="modal-default-button" v-on:click="closeModal">
                   OK
                 </button>
               </div>
@@ -70,6 +69,9 @@
         this.$store.dispatch("getSingleMovie", id);
         this.showModal = true;
       },
+      singleMovieImg(baseUrl, imgPath){
+          return baseUrl + imgPath
+      },
       nextPage() {
         this.pageNumber++;
       },
@@ -79,7 +81,7 @@
       closeModal() {
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
-    },
+      },
       moment
     },
     computed: {
