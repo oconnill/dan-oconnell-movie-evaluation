@@ -20,8 +20,8 @@
       </tbody>
     </table>
     <div v-if="pageNumber > 0">{{ pageNumber }}</div>
-    <button @click="prevPage">Previous</button>
-    <button @click="nextPage">Next</button>
+    <button v-if="pageNumber > 0" @click="prevPage">Previous</button>
+    <button v-if="pageNumber < pageCount" @click="nextPage">Next</button>
     <div v-if="showModal">
       <transition name="modal">
         <div class="modal-mask">
@@ -86,6 +86,7 @@
         this.showModal = false;
       },
       sortColumns(col) {
+
         switch (col) {
           case "Title":
             // Build toggle if clicked twice
