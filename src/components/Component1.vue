@@ -3,15 +3,16 @@
         <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>
-                    </th>
+                    <th>Title</th>
+                    <th>Release Date</th>
+                    <th>Vote Count</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td v-for="movie in fullMoviesList">{{ movie.title }}</td>
-                    <td v-for="movie in fullMoviesList">{{ movie.release_date }}</td>
-                    <td v-for="movie in fullMoviesList">{{ movie.vote_count }}</td>
+                  <tr v-for="movie in fullMoviesList">
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.release_date }}</td>
+                    <td>{{ movie.vote_count }}</td>
                   </tr>
                 </tbody>
               </table>          
@@ -31,7 +32,7 @@
     methods: {},
     computed: {
         fullMoviesList() {
-            return this.$store.state.fullMenuList
+            return this.$store.state.fullMovieList
         }
     }
   };

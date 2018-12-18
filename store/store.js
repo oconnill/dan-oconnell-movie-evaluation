@@ -14,6 +14,7 @@ export const store = new vuex.Store({
 
   mutations: {
     setFullMovieList(state, data) {
+      debugger
 state.fullMovieList = data;
     },
     setSingleMovie(state, data){
