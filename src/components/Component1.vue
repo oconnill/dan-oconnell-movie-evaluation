@@ -3,7 +3,7 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th v-on:click="(sortColumns(column))" v-for="column in columns">
+          <th v-on:click="orderBy(column)" v-for="column in columns">
             {{ column }}
           </th>
         </tr>
@@ -59,6 +59,13 @@
         pageNumber: 0,
         size: 20,
         showModal: false,
+        sortKey: '',
+        desc: true,
+        sortSettings: [
+            { "Title": true },
+            { "Release Date": true },
+            { "Vote Count": true }
+          ],
         columns: ["Title", "Release Date", "Vote Count"]
       };
     },
@@ -83,6 +90,12 @@
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
       },
+      orderBy(sorKey) {
+          debugger
+            this.sortKey = sorKey
+            this.sortSettings[sorKey] = !this.sortSettings[sorKey]
+            this.desc = this.sortSettings[sorKey]
+        },
     //   sortColumns(col) {
     //     switch (col) {
     //       case "Title":
