@@ -1,21 +1,26 @@
 <template>
   <div>
-        <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Release Date</th>
-                    <th>Vote Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="movie in fullMoviesList">
-                    <td>{{ movie.title }}</td>
-                    <td>{{ movie.release_date }}</td>
-                    <td>{{ movie.vote_count }}</td>
-                  </tr>
-                </tbody>
-              </table>          
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Release Date</th>
+          <th>Vote Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="movie in paginatedData"
+          v-on:click="singleMovieModal(movie.id)"
+        >
+          <td>{{ movie.title }}</td>
+          <td>{{ movie.release_date }}</td>
+          <td>{{ movie.vote_count }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button @click="prevPage">Previous</button>
+    <button @click="nextPage">Next</button>
   </div>
 </template>
 
@@ -24,16 +29,39 @@
     name: "app",
     components: {},
     data() {
-      return {};
+      return {
+        pageNumber: 0,
+        size: 20
+      };
     },
     mounted() {
-        this.$store.dispatch('getFullMovieList');
+      this.$store.dispatch("getFullMovieList");
     },
-    methods: {},
+    methods: {
+      singleMovieModal(id) {
+        debugger;
+      },
+      nextPage() {
+        this.pageNumber++;
+      },
+      prevPage() {
+        this.pageNumber--;
+      }
+    },
     computed: {
-        fullMoviesList() {
-            return this.$store.state.fullMovieList
-        }
+      fullMoviesList() {
+        return this.$store.state.fullMovieList;
+      },
+      pageCount() {
+        let l = this.$store.state.fullMovieList.length,
+          s = 20;
+        return Math.ceil(l / s);
+      },
+      paginatedData() {
+        const start = this.pageNumber * this.size,
+        end = start + this.size;
+        return this.$store.state.fullMovieList.slice(start, end);
+      }
     }
   };
 </script>
