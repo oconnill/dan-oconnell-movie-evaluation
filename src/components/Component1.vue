@@ -83,28 +83,24 @@
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
       },
-      sortColumns(col) {
+    //   sortColumns(col) {
+    //     switch (col) {
+    //       case "Title":
+    //         function compare(a, b) {
+    //           if (a.name < b.name) return -1;
+    //           if (a.name > b.name) return 1;
+    //           return 0;
+    //         }
+    //         return this.arrays.sort(compare);
+    //         break;
+    //       case "Release Date":
 
-
-        
-        switch (col) {
-          case "Title":
-            commit("setMenuOptions", this.state.developmentOptions);
-            break;
-          case "Release Date":
-            commit("setMenuOptions", this.state.designOptions);
-            break;
-          case "Vote Count":
-            debugger;
-            let a = this.$store.state.fullMovieList;
-            let sorted = a.sort(
-              (a, b) =>
-                parseInt(a.vote_count) - parseInt(b.vote_count)
-            );
-            this.$store.state.fullMovieList = sorted;
-            break;
-        }
-      },
+    //         break;
+    //       case "Vote Count":
+    //         debugger;
+    //         break;
+    //     }
+    //   },
       moment
     },
     computed: {
@@ -119,10 +115,10 @@
       },
       singleMovie() {
         return this.$store.state.singleMovieModal;
+      },
+      sortVotes(){
       }
     }
   };
 </script>
 
-let sorted = a.sort((a, b) => parseInt(a.movie.vote_count) -
-parseInt(b.ColumnLocation)); console.log(sorted);

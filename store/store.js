@@ -25,11 +25,17 @@ export const store = new vuex.Store({
   },
 
   actions: {
+    // AJAX request for Full movie list. On response sorts by vote_count reversed
     getFullMovieList({ commit, dispatch }) {
       axios
         .get("http://candidate-test.icapture.com/oconnelld/movies.php")
         .then(response => {
-          commit("setFullMovieList", response.data);
+          let a = response.data;
+          let sortedByVoteCount = a.sort(
+            (a, b) => parseInt(a.vote_count) - parseInt(b.vote_count)
+          );
+          let highestVotes = sortedByVoteCount.reverse()
+          commit("setFullMovieList", highestVotes);
         })
         .catch(err => {
           commit("handleError", err);
