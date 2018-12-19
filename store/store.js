@@ -9,7 +9,6 @@ export const store = new vuex.Store({
     fullMovieList: [],
     singleMovieModal: [],
     handleError: [],
-    sorted:[]
   },
 
   mutations: {
@@ -30,11 +29,18 @@ export const store = new vuex.Store({
       axios
         .get("http://candidate-test.icapture.com/oconnelld/movies.php")
         .then(response => {
+          for (var i = 0; i < response.data.length; i++) {
+            response.data[i]["vote_count"] = parseInt(
+              response.data[i]["vote_count"]
+            );
+          }
+
           let a = response.data;
+
           let sortedByVoteCount = a.sort(
             (a, b) => parseInt(a.vote_count) - parseInt(b.vote_count)
           );
-          let highestVotes = sortedByVoteCount.reverse()
+          let highestVotes = sortedByVoteCount.reverse();
           commit("setFullMovieList", highestVotes);
         })
         .catch(err => {
