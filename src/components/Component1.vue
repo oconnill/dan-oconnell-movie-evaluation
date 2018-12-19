@@ -110,49 +110,6 @@
         this.$store.state.singleMovieModal = [];
         this.showModal = false;
       },
-      // sortColumns(col) {
-      //   console.log(col.direction);
-
-      //   let first = col.direction[0];
-      //   let second = col.direction[1]
-
-      //   if (col.field !== "vote_count") {
-      //     this.$store.state.fullMovieList.sort(function(first, second) {
-      //       if (first[col.field] < second[col.field]) {
-      //         col.direction.reverse()
-      //         return -1;
-      //       }
-      //       if (first[col.field] > second[col.field]) {
-      //         col.direction.reverse()
-      //         return 1;
-      //       }
-      //       col.direction.reverse()
-      //       return 0;
-      //     });
-      //   }
-      //   this.$store.state.fullMovieList.sort(
-      //     (a, b) => parseInt(a[col.field]) - parseInt(b[col.field])
-      //   );
-      // },
-      // sortColumns(col) {
-      //   var sorted = this.$store.state.fullMovieList;
-
-      //   if (typeof sorted == "undefined" || sorted.col != col) {
-      //     sorted = { col: col, direction: -1 };
-      //   } else {
-      //     sorted.direction *= -1;
-      //   }
-
-      //   this.$store.state.fullMovieList.sort(function(a, b) {
-      //     if (a[col.field] < b[col.field]) {
-      //       return sorted.direction;
-      //     }
-      //     if (a[col.field] > b[col.field]) {
-      //       return sorted.direction * -1;
-      //     }
-      //     return 0;
-      //   });
-      // },
       sortColumns(col) {
         if (this.sortColumn === col) {
           this.ascending = !this.ascending;

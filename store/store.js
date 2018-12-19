@@ -29,6 +29,7 @@ export const store = new vuex.Store({
       axios
         .get("http://candidate-test.icapture.com/oconnelld/movies.php")
         .then(response => {
+          //Switches vote count to number so sort functions correctly
           for (var i = 0; i < response.data.length; i++) {
             response.data[i]["vote_count"] = parseInt(
               response.data[i]["vote_count"]
