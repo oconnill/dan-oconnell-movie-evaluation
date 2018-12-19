@@ -8,7 +8,8 @@ export const store = new vuex.Store({
   state: {
     fullMovieList: [],
     singleMovieModal: [],
-    handleError: []
+    handleError: [],
+    sorted:[]
   },
 
   mutations: {

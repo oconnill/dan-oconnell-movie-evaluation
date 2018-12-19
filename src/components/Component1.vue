@@ -3,20 +3,22 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th v-on:click="sortColumns(column)" v-for="column in columns">
-            {{ column }}
-          </th>
+                <tr>
+                        <th v-on:click="sortColumns(column)" v-for="column in columns">
+                            {{ column.heading }}
+                        </th>
+                    </tr>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="movie in paginatedData"
-          v-on:click="singleMovieModal(movie.id)"
-        >
-          <td><h4>{{ movie.title }}</h4></td>
-          <td><h4>{{ moment(movie.release_date).format("MM/DD/YYYY") }}</h4></td>
-          <td><h4>{{ movie.vote_count }}</h4></td>
-        </tr>
+            <tr
+            v-for="movie in paginatedData"
+            v-on:click="singleMovieModal(movie.id)"
+          >
+          <td v-on:click="sortColumns(column.field)" v-for="column in columns">
+                    {{ column.formatter ? column.formatter(movie[column.field]) : movie[column.field] }}
+                  </td>
+          </tr>
       </tbody>
     </table>
     <div v-if="pageNumber > 0">{{ pageNumber }}</div>
@@ -51,92 +53,107 @@
 </template>
 
 <script>
-  import moment from "moment";
+    import moment from "moment";
 
-  export default {
-    name: "app",
-    components: {},
-    data() {
-      return {
-        pageNumber: 0,
-        size: 20,
-        showModal: false,
-        columns: ["Title", "Release Date", "Vote Count"]
-      };
-    },
-    mounted() {
-        //Makes intial Movie List Ajax call on page load
-      this.$store.dispatch("getFullMovieList");
-    },
-    methods: {
-      singleMovieModal(id) {
-          // On click calls a function in the store for a single movie with id Ajax request
-        this.$store.dispatch("getSingleMovie", id);
-        this.showModal = true;
+    export default {
+      name: "app",
+      components: {},
+      data() {
+        return {
+          pageNumber: 0,
+          size: 20,
+          showModal: false,
+          columns: [
+      {
+          heading: "Title",
+          field: 'title',
       },
-      singleMovieImg(baseUrl, imgPath) {
-          // Concatenates base url and img path to return a img src for the view
-        return baseUrl + imgPath;
+      {
+          heading: "Release Date",
+          field: 'release_date',
+          formatter: function(d) {
+              return moment(d).format("MM/DD/YYYY");
+          }
       },
-      nextPage() {
-        this.pageNumber++;
+      {
+          heading: "Vote Count",
+          field: 'vote_count',
       },
-      prevPage() {
-        this.pageNumber--;
+  ]
+        };
       },
-      closeModal() {
-        this.$store.state.singleMovieModal = [];
-        this.showModal = false;
+      mounted() {
+          //Makes intial Movie List Ajax call on page load
+        this.$store.dispatch("getFullMovieList");
       },
-      sortColumns(col) {
-          // sorts columns of the table by column title
-        switch (col) {
-          case "Title":
-            // Build toggle if clicked twice
-            this.$store.state.fullMovieList.sort(function(a, b) {
-              if (a.title < b.title) {
-                return -1;
-              }
-              if (a.title > b.title) {
-                return 1;
-              }
-              return 0;
-            });
-            break;
-          case "Release Date":
-            this.$store.state.fullMovieList.sort(function(a, b) {
-              if (a.release_date < b.release_date) {
-                return -1;
-              }
-              if (a.release_date > b.release_date) {
-                return 1;
-              }
-              return 0;
-            });
-            break;
-          case "Vote Count":
-            this.$store.state.fullMovieList.sort(
-              (a, b) => parseInt(a.vote_count) - parseInt(b.vote_count)
-            );
-            break;
+      methods: {
+        singleMovieModal(id) {
+            // On click calls a function in the store for a single movie with id Ajax request
+          this.$store.dispatch("getSingleMovie", id);
+          this.showModal = true;
+        },
+        singleMovieImg(baseUrl, imgPath) {
+            // Concatenates base url and img path to return a img src for the view
+          return baseUrl + imgPath;
+        },
+        nextPage() {
+          this.pageNumber++;
+        },
+        prevPage() {
+          this.pageNumber--;
+        },
+        closeModal() {
+          this.$store.state.singleMovieModal = [];
+          this.showModal = false;
+        },
+        sortColumns(col) {
+            this.$store.state.sorted = this.$store.state.fullMovieList.sort(function(a, b) {
+        if (a.field < b.field) {
+          return -1;
         }
+        if (a.field > b.field) {
+          return 1;
+        }
+        return 0;
+    });
+},
+//         sortColumns(col) {
+//             debugger
+//     var sorted = this.$store.state.sorted;
+    
+//     if(typeof sorted == 'undefined' || sorted.col != col) {
+//         this.$store.state.sorted = {col: col, direction: -1}
+//     } else {
+//         this.$store.state.sorted.direction *= -1;
+//     }
+    
+//     this.$store.state.fullMovieList.sort(function(a, b) {
+//         if (a.title < b.title) {
+//           return this.$store.state.sorted.direction;
+//         }
+//         if (a.title > b.title) {
+//           return this.$store.state.sorted.direction * -1;
+//         }
+//         return 0;
+//     });
+// },
+        moment
       },
-      moment
-    },
-    computed: {
-      pageCount() {
-        let length = this.$store.state.fullMovieList.length;
-        return Math.ceil(length / this.size) - 1;
-      },
-      paginatedData() {
-          // splits up movie data to limit 20 entries per page
-        const start = this.pageNumber * this.size,
-          end = start + this.size;
-        return this.$store.state.fullMovieList.slice(start, end);
-      },
-      singleMovie() {
-        return this.$store.state.singleMovieModal;
+      computed: {
+        pageCount() {
+          let length = this.$store.state.fullMovieList.length;
+          return Math.ceil(length / this.size) - 1;
+        },
+        paginatedData() {
+            // splits up movie data to limit 20 entries per page
+          const start = this.pageNumber * this.size,
+            end = start + this.size;
+          return this.$store.state.fullMovieList.slice(start, end);
+        },
+        singleMovie() {
+          return this.$store.state.singleMovieModal;
+        }
+        sorted
       }
-    }
-  };
+    };
 </script>
