@@ -3,22 +3,24 @@
     <table class="table table-striped">
       <thead>
         <tr>
-                <tr>
-                        <th v-on:click="sortColumns(column)" v-for="column in columns">
-                            {{ column.heading }}
-                        </th>
-                    </tr>
+          <th v-on:click="sortColumns(column)" v-for="column in columns">
+            {{ column.heading }}
+          </th>
         </tr>
       </thead>
       <tbody>
-       <tr
-  v-for="movie in paginatedData"
-  v-on:click="singleMovieModal(movie.id)"
->
-<td v-on:click="sortColumns(column.field)" v-for="column in columns">
-          {{ column.formatter ? column.formatter(movie[column.field]) : movie[column.field] }}
-        </td>
-</tr>
+        <tr
+          v-for="movie in paginatedData"
+          v-on:click="singleMovieModal(movie.id)"
+        >
+          <td v-on:click="sortColumns(column.field)" v-for="column in columns">
+            {{
+              column.formatter
+                ? column.formatter(movie[column.field])
+                : movie[column.field]
+            }}
+          </td>
+        </tr>
       </tbody>
     </table>
     <div v-if="pageNumber > 0">{{ pageNumber }}</div>
@@ -53,89 +55,139 @@
 </template>
 
 <script>
-    import moment from "moment";
+  import moment from "moment";
 
-    export default {
-      name: "app",
-      components: {},
-      data() {
-        return {
-          pageNumber: 0,
-          size: 20,
-          showModal: false,
-          columns: [
-      {
-          heading: "Title",
-          field: 'title',
-      },
-      {
-          heading: "Release Date",
-          field: 'release_date',
-          formatter: function(d) {
+  export default {
+    name: "app",
+    components: {},
+    data() {
+      return {
+        pageNumber: 0,
+        size: 20,
+        showModal: false,
+        ascending: false,
+        sortColumn: "",
+        columns: [
+          {
+            heading: "Title",
+            field: "title"
+          },
+          {
+            heading: "Release Date",
+            field: "release_date",
+            formatter: function(d) {
               return moment(d).format("MM/DD/YYYY");
-          }
-      },
-      {
-          heading: "Vote Count",
-          field: 'vote_count',
-      },
-  ]
-        };
-      },
-      mounted() {
-          //Makes intial Movie List Ajax call on page load
-        this.$store.dispatch("getFullMovieList");
-      },
-      methods: {
-        singleMovieModal(id) {
-            // On click calls a function in the store for a single movie with id Ajax request
-          this.$store.dispatch("getSingleMovie", id);
-          this.showModal = true;
-        },
-        singleMovieImg(baseUrl, imgPath) {
-            // Concatenates base url and img path to return a img src for the view
-          return baseUrl + imgPath;
-        },
-        nextPage() {
-          this.pageNumber++;
-        },
-        prevPage() {
-          this.pageNumber--;
-        },
-        closeModal() {
-          this.$store.state.singleMovieModal = [];
-          this.showModal = false;
-        },
-        sortColumns(col) {
-            if(col.field !== 'vote_count'){
-                this.$store.state.fullMovieList.sort(function(a, b) {
-        if (a[col.field] < b[col.field]) {
-          return -1;
-        }
-        if (a[col.field] > b[col.field]) {
-          return 1;
-        }
-        return 0;
-    });
             }
-        this.$store.state.fullMovieList.sort((a, b) => parseInt(a[col.field]) - parseInt(b[col.field]));
-},
-        moment
+          },
+          {
+            heading: "Vote Count",
+            field: "vote_count"
+          }
+        ]
+      };
+    },
+    mounted() {
+      //Makes intial Movie List Ajax call on page load
+      this.$store.dispatch("getFullMovieList");
+    },
+    methods: {
+      singleMovieModal(id) {
+        // On click calls a function in the store for a single movie with id Ajax request
+        this.$store.dispatch("getSingleMovie", id);
+        this.showModal = true;
       },
-      computed: {
-        pageCount() {
-          let length = this.$store.state.fullMovieList.length;
-          return Math.ceil(length / this.size) - 1;
-        },
-        paginatedData() {
-            // splits up movie data to limit 20 entries per page
-          const start = this.pageNumber * this.size,
-            end = start + this.size;
-          return this.$store.state.fullMovieList.slice(start, end);
-        },
-        singleMovie() {
-          return this.$store.state.singleMovieModal;
+      singleMovieImg(baseUrl, imgPath) {
+        // Concatenates base url and img path to return a img src for the view
+        return baseUrl + imgPath;
+      },
+      nextPage() {
+        this.pageNumber++;
+      },
+      prevPage() {
+        this.pageNumber--;
+      },
+      closeModal() {
+        this.$store.state.singleMovieModal = [];
+        this.showModal = false;
+      },
+      // sortColumns(col) {
+      //   console.log(col.direction);
+
+      //   let first = col.direction[0];
+      //   let second = col.direction[1]
+
+      //   if (col.field !== "vote_count") {
+      //     this.$store.state.fullMovieList.sort(function(first, second) {
+      //       if (first[col.field] < second[col.field]) {
+      //         col.direction.reverse()
+      //         return -1;
+      //       }
+      //       if (first[col.field] > second[col.field]) {
+      //         col.direction.reverse()
+      //         return 1;
+      //       }
+      //       col.direction.reverse()
+      //       return 0;
+      //     });
+      //   }
+      //   this.$store.state.fullMovieList.sort(
+      //     (a, b) => parseInt(a[col.field]) - parseInt(b[col.field])
+      //   );
+      // },
+      // sortColumns(col) {
+      //   var sorted = this.$store.state.fullMovieList;
+
+      //   if (typeof sorted == "undefined" || sorted.col != col) {
+      //     sorted = { col: col, direction: -1 };
+      //   } else {
+      //     sorted.direction *= -1;
+      //   }
+
+      //   this.$store.state.fullMovieList.sort(function(a, b) {
+      //     if (a[col.field] < b[col.field]) {
+      //       return sorted.direction;
+      //     }
+      //     if (a[col.field] > b[col.field]) {
+      //       return sorted.direction * -1;
+      //     }
+      //     return 0;
+      //   });
+      // },
+      sortColumns(col) {
+        if (this.sortColumn === col) {
+          this.ascending = !this.ascending;
+        } else {
+          this.ascending = true;
+          this.sortColumn = col;
         }
+
+        var ascending = this.ascending;
+
+        this.$store.state.fullMovieList.sort(function(a, b) {
+          if (a[col.field] > b[col.field]) {
+            return ascending ? 1 : -1;
+          } else if (a[col.field] < b[col.field]) {
+            return ascending ? -1 : 1;
+          }
+          return 0;
+        });
+      },
+      moment
+    },
+    computed: {
+      pageCount() {
+        let length = this.$store.state.fullMovieList.length;
+        return Math.ceil(length / this.size) - 1;
+      },
+      paginatedData() {
+        // splits up movie data to limit 20 entries per page
+        const start = this.pageNumber * this.size,
+          end = start + this.size;
+        return this.$store.state.fullMovieList.slice(start, end);
+      },
+      singleMovie() {
+        return this.$store.state.singleMovieModal;
       }
-    };
+    }
+  };
 </script>
