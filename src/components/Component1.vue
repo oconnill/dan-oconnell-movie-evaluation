@@ -11,14 +11,14 @@
         </tr>
       </thead>
       <tbody>
-            <tr
-            v-for="movie in paginatedData"
-            v-on:click="singleMovieModal(movie.id)"
-          >
-          <td v-on:click="sortColumns(column.field)" v-for="column in columns">
-                    {{ column.formatter ? column.formatter(movie[column.field]) : movie[column.field] }}
-                  </td>
-          </tr>
+       <tr
+  v-for="movie in paginatedData"
+  v-on:click="singleMovieModal(movie.id)"
+>
+<td v-on:click="sortColumns(column.field)" v-for="column in columns">
+          {{ column.formatter ? column.formatter(movie[column.field]) : movie[column.field] }}
+        </td>
+</tr>
       </tbody>
     </table>
     <div v-if="pageNumber > 0">{{ pageNumber }}</div>
@@ -107,36 +107,19 @@
           this.showModal = false;
         },
         sortColumns(col) {
-            this.$store.state.sorted = this.$store.state.fullMovieList.sort(function(a, b) {
-        if (a.field < b.field) {
+            if(col.field !== 'vote_count'){
+                this.$store.state.fullMovieList.sort(function(a, b) {
+        if (a[col.field] < b[col.field]) {
           return -1;
         }
-        if (a.field > b.field) {
+        if (a[col.field] > b[col.field]) {
           return 1;
         }
         return 0;
     });
+            }
+        this.$store.state.fullMovieList.sort((a, b) => parseInt(a[col.field]) - parseInt(b[col.field]));
 },
-//         sortColumns(col) {
-//             debugger
-//     var sorted = this.$store.state.sorted;
-    
-//     if(typeof sorted == 'undefined' || sorted.col != col) {
-//         this.$store.state.sorted = {col: col, direction: -1}
-//     } else {
-//         this.$store.state.sorted.direction *= -1;
-//     }
-    
-//     this.$store.state.fullMovieList.sort(function(a, b) {
-//         if (a.title < b.title) {
-//           return this.$store.state.sorted.direction;
-//         }
-//         if (a.title > b.title) {
-//           return this.$store.state.sorted.direction * -1;
-//         }
-//         return 0;
-//     });
-// },
         moment
       },
       computed: {
@@ -153,7 +136,6 @@
         singleMovie() {
           return this.$store.state.singleMovieModal;
         }
-        sorted
       }
     };
 </script>
